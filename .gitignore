@@ -1,0 +1,48 @@
+# ---- KiCad generated / machine-local ----
+# Footprint & symbol info caches. Multi-MB, regenerated automatically on open.
+fp-info-cache
+
+# Per-user GUI state: open tabs, zoom, visible layers, last active layer.
+# Not part of the design; churns on every open and causes pointless diffs.
+*.kicad_prl
+
+# Auto-save and rescue files
+_autosave-*
+*-bak
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*.kicad_prl-bak
+*.kicad_pro-bak
+rescue-backup/
+*.000
+*.bck
+
+# KiCad's own timestamped project archives. Kept on disk, out of git:
+# they are ~16 MB of zips that duplicate what git history already tracks.
+backups/
+*-backups/
+
+# Blender auto-backup, byte-for-byte redundant with the .blend beside it
+*.blend1
+
+# Netlists, ERC/DRC reports, and other regenerable intermediates
+*.net
+*.dsn
+*.ses
+*.drc
+*.erc
+*_drc.json
+*_erc.json
+
+# ---- macOS ----
+.DS_Store
+._*
+__MACOSX/
+.Spotlight-V100
+.Trashes
+
+# ---- Editors ----
+*.swp
+*~
+.vscode/
+.idea/

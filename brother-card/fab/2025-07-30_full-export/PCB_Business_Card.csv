@@ -1,0 +1,6 @@
+"Reference","Value","Datasheet","Footprint","Qty","DNP"
+"C1","220n","~","Capacitor_SMD:C_0603_1608Metric","1",""
+"C2","2p","~","Capacitor_SMD:C_0603_1608Metric","1",""
+"D1","RED","~","LED_SMD:LED_0603_1608Metric","1",""
+"R1","65","~","Resistor_SMD:R_0603_1608Metric","1",""
+"U1","NT3H1101W0FTTJ","NT3H1101W0FTTJ","Package_SO:TSSOP-8_3x3mm_P0.65mm","1",""

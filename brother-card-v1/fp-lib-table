@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "btp")(type "KiCad")(uri "${KIPRJMOD}/../lib/btp.pretty")(options "")(descr "Beta Theta Pi artwork + custom footprints (vendored with this repo)"))
+)
