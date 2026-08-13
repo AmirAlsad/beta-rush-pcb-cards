@@ -16,8 +16,15 @@ earlier iteration in [`../brother-card-v1/`](../brother-card-v1/) was never buil
 | Source of record | `PCB_Business_Card.kicad_pcb`, last saved **2025-07-30** |
 | Designed in | KiCad **9.0.2** |
 | Outline | **88.9 × 50.8 mm** — exactly 3.5 × 2 in, a standard business-card footprint |
-| Stackup | 2 layer FR4, 1.6 mm, 35 µm (1 oz) copper |
-| Fab package | [`fab/2025-07-30_release/`](./fab/2025-07-30_release/) |
+| Stackup in the file | 2 layer FR4, 1.6 mm, 35 µm (1 oz) copper |
+| **As actually ordered** | **1 mm thick, blue mask, white silkscreen** — 50 pcs, assembled by JLCPCB |
+| Fab package | [`fab/2025-07-30_release/`](./fab/2025-07-30_release/) — byte-identical to what JLCPCB received |
+| Order record | [`../docs/order-history.md`](../docs/order-history.md) |
+
+> **The file says 1.6 mm; the cards are 1 mm.** Thickness is an order-page setting that
+> isn't stored in the gerbers, so nothing reconciles this automatically. Likewise the mask
+> is **blue**, which KiCad doesn't record either — the renders on this page were generated
+> with the as-ordered colour injected ([`../tools/render-boards.sh`](../tools/render-boards.sh)).
 
 ## How it works
 
@@ -39,27 +46,31 @@ useful bring-up probe — if the LED lights, the coil is coupling.
 
 ## Bill of materials
 
-| Ref | Value | Footprint | Purpose |
-|---|---|---|---|
-| `U2` | **NT3H2111W0FHKH** | `btp:nfc-chip` (XQFN8, 1.6 × 1.6 mm, 0.5 mm pitch) | NXP NTAG I²C *plus* — the tag IC |
-| `ANT1` | `COIL_GENERATOR` | `btp:COIL_GENERATOR` | 6-turn spiral antenna |
-| `C1` | 220 nF | 0603 | Holds the harvested rail up during RF communication |
-| `C2` | **2 pF (nominal — see below)** | 0603 | Antenna tuning capacitor |
-| `R1` | 65 Ω | 0603 | LED current limit: (3.3 V − 2 V) / 20 mA |
-| `D1` | Red LED | 0603 | Energy-harvest indicator |
+Schematic values on the left, the parts **actually fitted** by JLCPCB on the right.
+
+| Ref | Schematic | Part ordered | JLCPCB code | Purpose |
+|---|---|---|---|---|
+| `U2` | `NT3H2111W0FHKH` | **NT3H2111W0FHKH** — XQFN8, 1.6 × 1.6 mm, 0.5 mm pitch | `C710403` | NXP NTAG I²C *plus* — the tag IC |
+| `ANT1` | `COIL_GENERATOR` | *copper on the board, not a placed part* | — | 6-turn spiral antenna |
+| `C1` | `220n` | **CL10B224KA8NNNC** — 220 nF 0603 X7R | `C21120` | Holds the harvested rail up during RF communication |
+| `C2` | `2p` | **0603CG2R0C500NT** — **2.0 pF** 0603 C0G 50 V | `C1650` | Antenna tuning capacitor |
+| `R1` | `65` | **0603WAF649JT5E** — **64.9 Ω** 1% 0603 | `C23224` | LED current limit: (3.3 V − 2 V) / 20 mA |
+| `D1` | `RED` | **LTST-C190KRKT** — red 0603 | `C94869` | Energy-harvest indicator |
 
 `U2`'s `SDA`, `SCL`, and `FD` pins are deliberately left unconnected — the I²C side
 of the NTAG is unused here. The card is a pure NFC-Forum Type 2 tag.
 
-> **The `C2` value is the one number not to trust.** The schematic says `2p`, but
-> upstream's own bring-up landed on **3.9 pF** to pull resonance to 13.555 MHz, and
-> upstream's final BOM lists a **1.5 pF** part. Three different numbers for the same
-> component. Tuning capacitance depends on the real board's parasitics, so treat
-> `2p` as a placeholder and **tune on hardware**: sweep the antenna with a network
-> analyzer and pick the value that dips closest to 13.56 MHz.
-> [`../docs/nfc-theory.md`](../docs/nfc-theory.md) walks the full measurement.
-> Upstream also showed the card still reads with a badly-tuned 15 pF cap, just at
-> shorter range — so a wrong value degrades rather than breaks it.
+> **`C2` is 2.0 pF — this used to be the one uncertain number, and it is now settled.**
+> Upstream's write-up quotes **3.9 pF** as their measured optimum and lists **1.5 pF** in
+> their parts list, so for a while three values were in play. JLCPCB's parts list for this
+> order resolves it: the Beta cards were built with **2.0 pF**, matching the schematic's
+> `2p`, and they worked. Upstream's figures were for *their* board geometry.
+>
+> Reorder with 2.0 pF. If you ever want to chase more read range you can sweep it on
+> hardware — [`../docs/nfc-theory.md`](../docs/nfc-theory.md) walks the measurement — but
+> don't change it speculatively. Upstream showed the card still reads even with a badly
+> mistuned 15 pF cap, just at shorter range, so this parameter trades range rather than
+> breaking function.
 
 ## The antenna
 
@@ -89,9 +100,10 @@ upstream's work and is preserved in full in
 The visual design is the part that is original to Beta. Three things worth knowing
 if you edit it:
 
-- **The two-tone card is copper, not two mask colors.** The olive/green split is
-  bare copper zones under a single green mask. Ordering "two-color solder mask"
-  would be a waste of money — one mask color is all this needs.
+- **The two-tone card is copper, not two mask colours.** The card was ordered in
+  **blue**, and the lighter blue-violet half is bare copper under that single mask.
+  Ordering "two-colour solder mask" would be a waste of money — one colour is all this
+  needs.
 - **Artwork is polygons in footprints**, produced by KiCad's *Bitmap to Component*
   converter from PNG art, then placed like parts. `btp:btp-dragon-footprint` (crest
   + dragon, 35 polygons), `btp:map` (the Back Bay map, 4 polygons), and the
@@ -113,12 +125,14 @@ if you edit it:
 |---|---|
 | [`fab/2025-07-30_release/`](./fab/2025-07-30_release/) | **The authoritative set.** 9 gerbers + 2 drill files + placement/BOM CSVs, plotted from KiCad 9.0.2. This is the geometry that became physical cards. |
 | [`fab/2025-07-30_full-export/`](./fab/2025-07-30_full-export/) | An earlier export the same day, with `F.Fab`, courtyard, and margin layers included. Useful for reading, **not** for ordering — documentation layers are not manufacturing data. |
-| [`fab/2025-07-30_placement/`](./fab/2025-07-30_placement/) | Placement CSVs plus a Numbers spreadsheet used to reconcile the assembly. |
+| [`fab/2025-07-30_placement/`](./fab/2025-07-30_placement/) | Placement CSVs plus a Numbers spreadsheet used while reconciling the assembly. |
+| [`fab/jlcpcb-assembly/`](./fab/jlcpcb-assembly/) | The JLCPCB-format **BOM and CPL** used to order assembly. Upload these with the release gerbers to get populated boards. |
 
-The release gerbers report `88.95 × 50.85 mm` (outline centreline plus line width)
-and were plotted with a `0.1524 mm` minimum feature. Their timestamps read
-`18:41 UTC+03:00` — the laptop's clock was on a +03:00 timezone, so that's
-`11:41` Boston time, not evening.
+**The release set has been byte-compared against the files JLCPCB actually received**
+and is identical, so reordering from it reproduces the 2025 cards exactly. The gerbers
+report `88.95 × 50.85 mm` (outline centreline plus line width) and were plotted with a
+`0.1524 mm` minimum feature. Their timestamps read `18:41 UTC+03:00` — the laptop's clock
+was on a +03:00 timezone, so that's `11:41` Boston time, not evening.
 
 **Reorder from `fab/2025-07-30_release/`, not from a fresh plot.** Regenerating
 gerbers in a newer KiCad produces subtly different zone fills and teardrop
@@ -144,11 +158,22 @@ clean DRC, add exclusions.
 
 ## Assembly
 
-Five parts, all 0603 except the IC. The IC is the hard one: **XQFN8, 1.6 × 1.6 mm,
-0.5 mm pitch, 0.71 × 0.22 mm pads, no exposed thermal pad.** That is small for hand
-work — hot air with plenty of flux, or paste and a hotplate. The v1 board used a
-TSSOP-8 instead, which is dramatically easier to hand-solder; if a future year wants
-to assemble these by hand at scale, reverting the package is a legitimate move.
+**The 50 cards were machine-assembled by JLCPCB**, top side, high-temp paste — not
+hand-soldered. Which is fortunate, because the IC is the awkward part: **XQFN8,
+1.6 × 1.6 mm, 0.5 mm pitch, 0.71 × 0.22 mm pads, no exposed thermal pad.**
+
+Two consequences of ordering assembly, both covered in
+[`../docs/order-history.md`](../docs/order-history.md):
+
+- **JLCPCB adds two 10 mm edge rails** to carry fiducials and its SMT tracking QR code,
+  which is why the order dimension reads 88.9 × **70.8** mm rather than 88.9 × 50.8 mm.
+  The rails are V-scored off, and the QR marks go with them, so the card faces stay clean.
+- **Depaneling was not paid for in 2025**, so the cards arrived with rails attached and
+  someone snapped all 50 off by hand. Tick that box next time.
+
+If you ever do assemble by hand, [`../brother-card-v1/`](../brother-card-v1/) used a
+pin-compatible **TSSOP-8** version of the same NTAG family — 0.65 mm pitch and gull-wing
+leads — which is far friendlier to an iron.
 
 `D1` is the bring-up test: hold the card to a phone with NFC on, and the LED should
 light. If it lights but the phone shows nothing, the coil is fine and the problem is

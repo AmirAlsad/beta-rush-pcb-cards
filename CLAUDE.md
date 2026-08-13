@@ -15,7 +15,10 @@ rush week (Aug 30 – Sep 6, 2025):
 - **`pnm-card/`** — silkscreen-only schedule card (**fabricated**). No components, no
   nets, empty schematic.
 - **`lib/`** — `btp.pretty` + `btp.kicad_sym`, vendored. Shared by all three projects.
-- **`docs/`** — written documentation plus inherited upstream reference material.
+- **`tools/render-boards.sh`** — regenerates `docs/renders/` in the as-ordered mask
+  colours.
+- **`docs/`** — written documentation, the 2025 order record, and inherited upstream
+  reference material.
 
 There is **no build, no test suite, and no dependency install.** Do not invent one.
 Verification here means opening a board in KiCad, running DRC, or rendering an image.
@@ -29,8 +32,9 @@ failure this archive was created to fix. Same applies to renaming the card
 directories.
 
 **Never overwrite or "clean up" anything under a `fab/` folder.** Those gerbers are the
-record of physical objects that exist in the world. A new export goes in a **new dated
-folder** (`fab/YYYY-MM-DD_release/`).
+record of physical objects that exist in the world, and the `…_release/` sets have been
+**byte-verified against the files JLCPCB actually received**. A new export goes in a
+**new dated folder** (`fab/YYYY-MM-DD_release/`).
 
 **Never regenerate gerbers to replace an existing release set.** Replotting unmodified
 source in a newer KiCad yields different zone-fill and teardrop geometry (measured:
@@ -107,17 +111,37 @@ the source PNG and re-run *Bitmap to Component*).
   out in the READMEs and in `next-year-checklist.md` as a thing to fix when *retyping*
   for a new year — not something to silently correct in place.
 
-## Facts that are not in this repo
+## Physical facts KiCad does not store
 
-`docs/OPEN-QUESTIONS.md` tracks what couldn't be recovered from the files — most
-importantly **the rush URL written to the NFC chips**, the fab vendor/quantity/cost,
-and whether the tags were locked read-only. Entries there carry a best inference and
-its basis. **Don't present those inferences as established fact**, and if you learn a
-real answer, write it into the relevant doc and delete the entry.
+The board files disagree with the manufactured cards in two ways that will mislead you if
+you trust the source alone. `docs/order-history.md` is the authority.
+
+- **Thickness: the files say 1.6 mm; both cards were built at 1 mm.**
+- **Mask colour: the brother card is blue, the PNM card is green.** KiCad stores no mask
+  colour at all. `tools/render-boards.sh` injects the as-ordered colour into a *temp copy*
+  and renders with `--use-board-stackup-colors` — **never modify a board file to change
+  its colour.**
+
+Also from the order record: the brother cards were **machine-assembled by JLCPCB** (not
+hand-soldered), JLCPCB added two 10 mm V-scored edge rails for assembly, and `C2` is
+**2.0 pF** (`0603CG2R0C500NT`) — that value was uncertain in earlier drafts and is now
+settled, so don't reintroduce the doubt.
+
+## Facts that are still not in this repo
+
+`docs/OPEN-QUESTIONS.md` tracks what remains unrecoverable, and keeps resolved entries at
+the bottom so nobody re-investigates them. Still open: **photographs of the real cards**,
+the **assembly/component cost**, the exact programming app, and an upstream license grant.
+
+Where that file gives a best inference rather than a fact, it labels it as such — **don't
+promote those to established fact**. If you learn a real answer, write it into the relevant
+doc and move the entry to Resolved.
 
 There are **no photographs of either finished Beta card** anywhere in this repo. Every
-photo under `docs/images/` is upstream's card. Images of the Beta cards under
-`docs/renders/` are CLI renders, not photos — describe them as such.
+photo under `docs/images/` is upstream's card. Images under `docs/renders/` are CLI
+renders, not photos — describe them as such. Renders show geometry and colour faithfully;
+they cannot show solder quality, real silkscreen legibility, the snapped rail edge, or the
+LED lit.
 
 ## Attribution
 

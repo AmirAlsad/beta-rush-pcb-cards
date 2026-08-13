@@ -1,16 +1,29 @@
 # Rush Cards — MIT Beta Theta Pi
 
+<p align="center">
+  <img src="./docs/renders/brother-card-hero.png" width="88%" alt="The brother card">
+</p>
+
 Two PCB cards designed for **Beta Theta Pi, Beta Eta chapter (MIT)** rush week,
 **August 30 – September 6, 2025**. They are circuit boards, not cardstock — the
 whole point was that handing someone a PCB is memorable in a way a paper flyer
 never is.
 
+**400 cards were made** by JLCPCB for **$109.80** in board cost: 50 assembled NFC
+cards and 350 schedule cards. Everything needed to order more is in this repo,
+including the exact files JLCPCB received.
+
 | | |
 |---|---|
-| **Brother card** | A working NFC tag. A brother taps it to a phone and the phone opens the chapter's rush link. Carried by brothers during rush. |
-| **PNM card** | A silkscreen-only board printing the full week's event schedule, the house address, and the van-pickup number. Handed to PNMs (prospective new members). |
+| **Brother card** | A working NFC tag. A brother taps it to a phone and the phone opens the chapter's rush link. Carried by brothers during rush. **Blue, 1 mm, 50 made, assembled by JLCPCB.** |
+| **PNM card** | A silkscreen-only board printing the full week's event schedule, the house address, and the van-pickup number. Handed to PNMs (prospective new members). **Green, 1 mm, 350 made.** |
 
 Designed in **KiCad 9.0.2**. Both boards were fabricated and used.
+
+> **Note for anyone reordering: both cards are 1 mm thick, and every KiCad file here
+> says 1.6 mm.** Thickness is an order-page setting that isn't carried in the gerbers,
+> so nothing will warn you. Same for the mask colours, which KiCad doesn't store at all.
+> [`docs/order-history.md`](./docs/order-history.md) has the complete as-ordered spec.
 
 ---
 
@@ -33,9 +46,9 @@ Bay State, Beacon.
 </p>
 
 The back is nearly empty by design: two pads and one short trace that carry the
-inner end of the coil back out from under itself. **The two-tone green/olive
-split is not two solder-mask colors** — it is bare copper zones used as artwork,
-so one mask color reads as two shades.
+inner end of the coil back out from under itself. **The two-tone split is not two
+solder-mask colours** — it is bare copper zones used as artwork, so a single blue mask
+reads as two shades. Never order "two-colour mask" for these.
 
 ### PNM card — front and back
 
@@ -60,13 +73,17 @@ fab has to rout the profile rather than just shear a rectangle.
 ├── brother-card-v1/     ← earlier iteration, NEVER fabricated (2025-07-06)
 ├── pnm-card/            ← the schedule card that was fabricated (2025-07-30)
 ├── lib/                 ← btp.pretty + btp.kicad_sym  (MUST stay next to the projects)
+├── tools/
+│   └── render-boards.sh ← regenerates docs/renders/ in the as-ordered mask colours
 └── docs/
-    ├── nfc-theory.md          ← upstream's full antenna derivation, credited
-    ├── programming-the-tag.md ← how to write the rush link onto a card
+    ├── order-history.md       ← the 2025 JLCPCB order: spec, prices, parts, gotchas
     ├── reordering.md          ← how to get more cards made
-    ├── kicad-setup.md         ← opening these files years from now
     ├── next-year-checklist.md ← what to change to reuse these for a new rush
-    ├── OPEN-QUESTIONS.md      ← facts that live only in Amir's head
+    ├── programming-the-tag.md ← how to write the rush link onto a card
+    ├── kicad-setup.md         ← opening these files years from now
+    ├── nfc-theory.md          ← upstream's full antenna derivation, credited
+    ├── OPEN-QUESTIONS.md      ← what still isn't recorded anywhere
+    ├── order-history/         ← JLCPCB order screenshots + production records
     ├── renders/               ← generated board renders (+ upstream's Blender model)
     ├── images/                ← upstream's figures, referenced by nfc-theory.md
     ├── antenna-simulations/   ← upstream's LTSpice + MATLAB work
@@ -74,7 +91,12 @@ fab has to rout the profile rather than just shear a rectangle.
 ```
 
 Each card directory holds its own `README.md` with the real detail, the KiCad
-source, and a `fab/` folder containing the exact gerbers that were sent out.
+source, and a `fab/` folder containing the exact gerbers that were sent out —
+**verified byte-identical to the files JLCPCB received.**
+
+**Want to just order more cards?** You don't need KiCad at all. Go straight to
+[`docs/reordering.md`](./docs/reordering.md), upload the `fab/…_release/` folders, and
+set 1 mm thickness with the right mask colour.
 
 ## Opening these in KiCad
 
@@ -127,12 +149,20 @@ crest and wordmark are the fraternity's marks and aren't licensed by this repo e
 
 ## Reusing these next year
 
-Start at [`docs/next-year-checklist.md`](./docs/next-year-checklist.md). The
-short version: the PNM card needs its dates and events retyped every year and
-nothing else; the brother card is year-independent and can be reordered as-is,
-because the rush link is written to the chip rather than printed on the board.
+Start at [`docs/next-year-checklist.md`](./docs/next-year-checklist.md). The short
+version: the PNM card needs its dates and events retyped every year and nothing else;
+the brother card is year-independent, because the rush link is written to the chip
+rather than printed on the board.
 
-One thing worth knowing before you reprint the PNM card verbatim: it says
-**"Saturday, August 31"**, but August 31, 2025 was a **Sunday**. The typo shipped
-on the physical cards. It is preserved in the source so the archive matches the
-artifact — fix it when you retype the dates.
+Three things worth knowing before you start:
+
+- **The 2025 NFC tags were never locked**, so surviving brother cards can simply be
+  rewritten — possibly no order needed at all.
+- **Program the tags with a permanent redirect you control**, not a destination URL. The
+  2025 cards point at a link that has already gone stale after a website change. A stable
+  `beta.mit.edu/rush`-style path that redirects means future years change one line on the
+  website and never touch hardware again. The chapter is moving to this;
+  [`docs/programming-the-tag.md`](./docs/programming-the-tag.md) has the details.
+- **The PNM card says "Saturday, August 31"**, but August 31, 2025 was a **Sunday**. The
+  typo shipped on the physical cards. It's preserved in the source so the archive matches
+  the artifact — fix it when you retype the dates.

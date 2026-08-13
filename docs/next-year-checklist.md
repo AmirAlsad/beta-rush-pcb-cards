@@ -8,19 +8,40 @@ Read this first if you've inherited the repo and rush is coming.
 
 Nothing on the brother card names a year, a date, or an event. The rush link lives in
 the chip, not the silkscreen. So brother cards can be **reordered as-is and
-reprogrammed**, or even reused physically if you still have them — just rewrite the
-URL.
+reprogrammed** — and because the 2025 tags were left **unlocked**, any surviving 2025
+cards can simply be rewritten instead of replaced.
 
 The PNM card prints the entire 2025 schedule. It needs the dates and events retyped
 every single year. That's the annual work.
 
+## Do this once, and the brother cards stop needing work forever
+
+**Set up a permanent redirect and program the tags with that**, instead of writing a
+destination URL directly onto the chips.
+
+The 2025 cards were programmed with a URL that has already gone stale — the chapter site
+changed. Pick a stable path you own (`beta.mit.edu/rush`, say), point the tags at it, and
+have it redirect to whatever this year's rush content is. Then future years change one
+line on the website and touch zero hardware, and a card printed in 2025 still works in
+2030.
+
+The chapter has decided to go this way. Details and the field to record the chosen URL
+are in [`programming-the-tag.md`](./programming-the-tag.md). **Doing this before the next
+batch is programmed is the single highest-leverage thing on this page.**
+
 ## If you're only doing the minimum
 
 1. **Brother cards** — reorder from
-   [`../brother-card/fab/2025-07-30_release/`](../brother-card/fab/2025-07-30_release/),
-   assemble, then write the new rush URL to each
+   [`../brother-card/fab/2025-07-30_release/`](../brother-card/fab/2025-07-30_release/)
+   plus the two files in
+   [`../brother-card/fab/jlcpcb-assembly/`](../brother-card/fab/jlcpcb-assembly/) for
+   assembly, then write the redirect URL to each
    ([`programming-the-tag.md`](./programming-the-tag.md)). No KiCad needed at all.
-2. **PNM cards** — retype the schedule (below), re-export, order.
+   Remember: **1 mm thickness, blue mask** — see
+   [`reordering.md`](./reordering.md).
+2. **PNM cards** — retype the schedule (below), re-export, order. **1 mm, green mask.**
+3. Or, if you have leftover 2025 brother cards: **just rewrite their tags.** No order at
+   all.
 
 ## Updating the PNM card
 
@@ -63,18 +84,28 @@ Then:
 - [ ] **Commit before ordering.** The commit that matches an order is what makes a
       reorder possible in three years.
 
-## Lead time, working backwards from rush
+## Lead time, from what actually happened in 2025
 
-Rush 2025 started **Saturday, August 30**, and the gerbers went out **July 30** — a
-**one-month** buffer covering fab, shipping, assembly, and tag programming. That's a
-reasonable target. The steps that will bite you:
+| Date (2025) | Event | Gap |
+|---|---|---|
+| Jul 30 | Gerbers plotted | |
+| **Aug 6** | Order `10486412A` placed at JLCPCB | +7 days of sitting on it |
+| Aug 9 | Brother cards finished (50, incl. assembly) | **3 days** |
+| Aug 11 | PNM cards finished (350) | **5 days** |
+| **Aug 30** | Rush week begins | ~3 weeks of slack |
+
+**Order to rush: 24 days**, of which fabrication was only 3–5. Three weeks total is
+comfortable; two is tight but feasible. Full detail in
+[`order-history.md`](./order-history.md).
+
+The steps that will actually bite you:
 
 | Step | Notes |
 |---|---|
-| Finalise the schedule | The real blocker. You cannot print a card before events are locked. |
-| Fab + ship | Days to weeks depending on vendor and tier. Cheap tiers are slow tiers. |
-| Assembly | Brother card only. XQFN8 is slow by hand — see [`reordering.md`](./reordering.md). |
-| Tag programming | ~15 s per card, but **per card**, with an Android phone. Easy to forget. |
+| Finalise the schedule | The real blocker. You can't print a card before events are locked. |
+| Fab + assembly | 3–5 days at JLCPCB in 2025. Cheap shipping tiers add much more than fab does. |
+| **Depaneling** | If you skip paying for it, someone snaps 50 edge rails off by hand. Budget the hour, or tick the box. |
+| Tag programming | ~15 s per card, but **per card**. Easy to forget until the night before — and unnecessary entirely if you set up the redirect above. |
 
 ## Ideas worth considering
 
@@ -83,9 +114,13 @@ reasonable target. The steps that will bite you:
   cut before production. It's still in the library as `btp:doodles`, so restoring it is
   a copy-paste, not a redraw. It's the most charming artwork in this repo and it never
   got made.
-- **Switch back to TSSOP-8** if you're hand-assembling a large batch. v1 used a
-  pin-compatible TSSOP-8 NTAG; 0.65 mm pitch and gull-wing leads instead of a 1.6 mm
-  QFN. See [`../brother-card-v1/README.md`](../brother-card-v1/README.md).
+- **Order more brother cards than you think you need.** Only 50 were made in 2025 versus
+  350 PNM cards. The PCB cost was $23.70 — the real cost is assembly and the per-part
+  feeder fees on four "Extended" parts, which are *fixed*, so the marginal cost per card
+  drops fast with quantity. 50 → 200 costs far less than 4×.
+- **Try one card with an exposed-copper finish.** The artwork is already copper-vs-mask;
+  ordering a small batch with no mask over the crest half, or in ENIG so the copper reads
+  gold, would look striking. Cheap experiment on a 50-piece run.
 - **Put an NFC tag in the PNM card too.** It's currently a passive flyer. Adding the
   brother card's circuit would let a PNM tap their own card to reach the rush link —
   arguably higher value than a brother tapping *at* them. Costs five parts and

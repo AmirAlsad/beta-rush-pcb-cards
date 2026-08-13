@@ -1,106 +1,118 @@
 # Programming the brother card
 
-The rush link is **not printed on the board and not stored in this repo.** It lives
-in the NFC chip's EEPROM, written after assembly with a phone. That's a feature: the
-same physical card works for any year, because you reprogram it instead of
-reordering it.
+The rush link is **not printed on the board.** It lives in the NFC chip's EEPROM,
+written after assembly with a phone. That's the good part: the same physical card works
+for any year, because you reprogram it instead of reordering it.
 
-Only the **brother card** has a chip. The PNM card is silkscreen only.
+**The 2025 tags were not locked read-only**, so every existing brother card can be
+rewritten. Only the brother card has a chip — the PNM card is silkscreen only.
+
+## Do this first: point the tags at a redirect you control
+
+**Don't write a destination URL onto the chips. Write a permanent short link that
+redirects.**
+
+The 2025 cards were programmed with a URL that has since gone stale — the chapter
+website changed and that link is no longer meaningful. The cards themselves are fine;
+they just point somewhere that no longer matters. That is a completely avoidable
+problem, and it will recur every time the site changes.
+
+Instead, pick a stable path you own — something like `beta.mit.edu/rush` or
+`beta.mit.edu/r` — and have it 302-redirect to wherever this year's rush content lives.
+Then:
+
+- Cards get programmed **once, ever.** Future years change the redirect target on the
+  website and touch no hardware at all.
+- A card printed in 2025 keeps working in 2030.
+- You can repoint mid-rush if a link breaks, with cards already in people's pockets.
+- You get click analytics for free, if the web host offers them.
+
+The chapter has decided to move to this approach. Whoever sets it up should record the
+chosen URL here:
+
+```
+Permanent redirect URL written to the tags:  <FILL IN ONCE CHOSEN>
+Redirect currently points to:                <FILL IN>
+```
 
 ## What's inside
 
-`U2` is an **NXP NT3H2111W0FHKH** — NTAG I²C *plus*, 1 kB EEPROM, in an XQFN8
-package. For programming purposes what matters is that it behaves as a standard
-**NFC Forum Type 2 tag**, so any generic NDEF writer works. The I²C pins (`SDA`,
-`SCL`, `FD`) are unconnected on this board — everything happens over RF.
+`U2` is an **NXP NT3H2111W0FHKH** — NTAG I²C *plus*, 1 kB EEPROM, XQFN8 package
+(JLCPCB `C710403`). For programming purposes it behaves as a standard **NFC Forum
+Type 2 tag**, so any generic NDEF writer works. Its I²C pins are unconnected on this
+board; everything happens over RF.
 
-The payload is a single **NDEF URI record** pointing at the chapter's rush link.
+The payload is a single **NDEF URI record**.
 
-> ### ⚠️ TODO — the exact URL is not recorded anywhere
->
-> The URL written to the 2025 cards is not in the KiCad files, the gerbers, or any
-> file in this archive — it exists only in whatever was typed into the phone app at
-> the time. Someone who knows it should fill it in here.
->
-> ```
-> URL written to the 2025 brother cards:  <FILL ME IN>
-> ```
->
-> The card's silkscreen points at `beta.mit.edu`, so the rush link is very likely a
-> path under that domain. **Verify against a real card before assuming** — tap one
-> with a phone and read what comes up. See
-> [`OPEN-QUESTIONS.md`](./OPEN-QUESTIONS.md).
+Keep the URL short. NDEF URI records use a prefix byte for common schemes
+(`https://www.`, `https://`, …), so a short path costs very few bytes — irrelevant
+against 1 kB, but short URLs also read faster and are easier to eyeball when verifying a
+batch.
 
 ## Writing a tag
 
-### Android (this is how the 2025 cards were done)
+### Android — the path known to work
 
-Use any of these from the Play Store — all write NDEF to Type 2 tags:
+Any of these write NDEF to Type 2 tags:
 
-- **NFC TagWriter by NXP** — the vendor app, and the one upstream's project used
+- **NFC TagWriter by NXP** — the vendor app, used for the 2025 cards
 - **NFC Tools** (wakdev)
-- **TagInfo by NXP** — read-only; use it to *verify* what a card contains
+- **NFC TagInfo by NXP** — read-only; use it to *verify*
 
-Flow, using TagWriter as the example:
+With TagWriter:
 
 1. *Write tags ▸ New dataset ▸ Link*
-2. Enter the rush URL, choose `https://`
+2. Enter the URL, choose `https://`
 3. *Save & Write*, then hold the card to the back of the phone
 
-The card should read at up to a few centimetres. **`D1` lighting up means the coil
-is coupling** — if the LED lights but nothing is written, the problem is the app or
-the tag's lock state, not the antenna.
+**`D1` lighting up means the coil is coupling.** If the LED lights but nothing writes,
+the problem is the app or aim, not the antenna.
 
 ### iPhone
 
-The 2025 recollection is that this "didn't work on iPhone." The most likely
-explanation is the app, not the hardware: **NFC TagWriter by NXP is Android-only** —
-it isn't in the App Store at all, so there is nothing to try.
+The 2025 recollection was that iPhone "didn't work," and the most likely reason is
+simply that **NFC TagWriter by NXP is Android-only** — it isn't in the App Store, so
+there was nothing to try.
 
-iPhones *can* write NDEF tags — iPhone 7 and newer, iOS 13+, using an app built on
-Core NFC such as **NFC Tools** (wakdev) or **NFC21 Tools**. Caveats that make iOS
-the less pleasant option:
+iPhones *can* write NDEF tags — iPhone 7 and newer, iOS 13+, via a Core NFC app like
+**NFC Tools** (wakdev) or **NFC21 Tools**. Two things trip people up:
 
-- Writing has to be driven from inside such an app; iOS's built-in background tag
-  reading only *reads*.
-- The iPhone's NFC antenna is at the **top edge of the back**, not the centre. Aiming
-  at the middle of the phone often just fails. This alone explains a lot of "iPhone
-  doesn't work" reports.
-- A tag already locked read-only cannot be rewritten from any phone, on any OS.
+- Writing must be driven from inside such an app. iOS's built-in background tag reading
+  only *reads*.
+- **The iPhone's NFC antenna is at the top edge of the back, not the centre.** Aiming at
+  the middle of the phone just fails. This alone explains a lot of "iPhone doesn't work."
 
-**Recommendation: use an Android phone.** It's the path that's known to have worked
-for this exact card, and TagWriter gives clearer error messages.
+**Use an Android phone if you have one** — it's the known-good path and TagWriter gives
+clearer errors.
 
-## Do not lock the tags
+## Don't lock the tags
 
-TagWriter and similar apps offer to make a tag **read-only** (setting the NTAG's lock
-bytes). This is **irreversible in hardware** — a locked card can never be rewritten
-by anyone, and its rush URL is frozen forever.
+TagWriter and similar apps offer to make a tag **read-only** by setting the NTAG's lock
+bytes. This is **irreversible in hardware**: a locked card can never be rewritten by
+anyone, ever.
 
-Since the entire reason these cards are reusable across years is that the URL can be
-rewritten, **leave them writable.** The only argument for locking is preventing a PNM
-from rewriting a card they were handed, which is not a real threat model for a
-fraternity rush card.
-
-> **Unknown:** whether the 2025 cards were locked. If a card refuses to accept a new
-> URL, that's your answer — and those specific cards are permanently stuck on the
-> 2025 link. Test one before promising anyone a batch is reusable.
+The 2025 run was left **unlocked**, which is correct and worth continuing. The whole
+reusability story — and the redirect strategy above — depends on tags staying writable.
+The only argument for locking is stopping a PNM from rewriting a card they were handed,
+which isn't a real concern here.
 
 ## Verifying a batch
 
-Before handing out cards, check each one:
+Before handing cards out, check each one with **NFC TagInfo** or NFC Tools:
 
-1. Open **NFC TagInfo** (NXP) or NFC Tools
-2. Tap the card
-3. Confirm the NDEF record shows the right URL, and that the tag reads as writable
+1. Tap the card
+2. Confirm the NDEF record shows the right URL
+3. Confirm the tag still reads as writable
 
-Worth doing per-card rather than per-batch — the failure mode is usually a single
-cold solder joint on the XQFN8, and a card that reads fine on the bench is a card
-that will work in someone's hand.
+Do this per card, not per batch. The realistic failure mode is a single bad joint on one
+XQFN8, and a card that reads on the bench is a card that works in someone's hand.
 
-## Further reading
+## If cards read at short range
 
-[`nfc-theory.md`](./nfc-theory.md) covers the RF side in depth: why the coil is
-tuned to 13.56 MHz, how resonance was measured with a network analyzer, and what a
-badly tuned antenna looks like on a spectrum analyzer. Useful if cards read at
-noticeably shorter range than expected.
+Range depends on how close the antenna's resonance sits to 13.56 MHz.
+[`nfc-theory.md`](./nfc-theory.md) covers the measurement in depth — sweeping the antenna
+with a network analyzer and adjusting `C2`.
+
+For the 2025 cards `C2` was **2.0 pF** (`0603CG2R0C500NT`), confirmed from the JLCPCB
+parts list, and that worked. Upstream's 3.9 pF figure was for *their* board geometry.
+Don't change `C2` speculatively — measure first.

@@ -87,17 +87,28 @@ Per [`../.gitignore`](../.gitignore):
 
 ## Regenerating the renders
 
-The board images in `renders/` were produced with KiCad's CLI, not by hand:
+Run the script — don't hand-roll the commands:
+
+```sh
+tools/render-boards.sh
+```
+
+It rewrites everything in `renders/` in about 90 seconds.
+
+**Why a script rather than a one-liner:** the cards were manufactured in specific mask
+colours (brother card **blue**, PNM card **green**) and KiCad stores no mask colour at
+all, so a naive render comes out the default green and misrepresents the brother card.
+The script copies each project to a temp directory, injects a `(color …)` field into the
+copy's stackup, and renders with `--use-board-stackup-colors`. **The board files
+themselves are never modified** — they're the as-fabricated record.
+
+If you do want a quick one-off in default colours:
 
 ```sh
 export PATH="/Applications/KiCad/KiCad.app/Contents/MacOS:$PATH"
-
 kicad-cli pcb render --side top --width 2400 --height 1400 --quality high \
-  -o docs/renders/brother-card-front.png brother-card/PCB_Business_Card.kicad_pcb
+  -o /tmp/front.png brother-card/PCB_Business_Card.kicad_pcb
 ```
-
-`--side bottom` for the back. Same command shape for `pnm-card` (that one was
-rendered at `2400 × 1500` to suit its taller outline).
 
 `kicad-cli` is also how the DRC numbers in each README were measured:
 

@@ -20,9 +20,15 @@ work each year is retyping the schedule.
 | Source of record | `PNM_Rush_Card.kicad_pcb`, last saved **2025-07-30** |
 | Designed in | KiCad **9.0.2** |
 | Outline | **89.98 × 54.97 mm**, octagonal (clipped corners) |
-| Stackup | 2 layer FR4, 1.6 mm |
+| Stackup in the file | 2 layer FR4, 1.6 mm |
+| **As actually ordered** | **1 mm thick, green mask, white silkscreen** — **350 pcs, $86.10** |
 | Layers used | `F.SilkS` (28 items), `B.SilkS` (22), `Edge.Cuts` (8), one placeholder item each on `F.Cu` / `B.Cu` |
-| Fab package | [`fab/2025-07-30_release/`](./fab/2025-07-30_release/) |
+| Fab package | [`fab/2025-07-30_release/`](./fab/2025-07-30_release/) — byte-identical to what JLCPCB received |
+| Order record | [`../docs/order-history.md`](../docs/order-history.md) |
+
+> **The file says 1.6 mm; the cards are 1 mm.** Thickness is an order-page setting that
+> isn't carried in the gerbers, so nothing reconciles it automatically. Set 1 mm explicitly
+> on a reorder or you'll get noticeably chunkier cards.
 
 ## The outline is the one thing that costs money
 
@@ -31,6 +37,11 @@ rectangular card can be sheared or V-scored cheaply; this profile has to be
 **routed**. When quoting, make sure the vendor is pricing a routed outline and
 isn't silently substituting a rectangle. This is the single most likely way a
 reorder comes back looking wrong.
+
+JLCPCB got this right in 2025: its production file set for this card contains **no V-cut
+layer at all** (and no drill file, since there are no holes), confirming the profile was
+routed as intended. The brother card's set, by contrast, does have a V-cut layer — for the
+assembly edge rails.
 
 ## What's printed on it
 
@@ -90,6 +101,14 @@ their real minimum line width.
 sent out: `F.Cu`, `B.Cu`, both silkscreens, both masks, both pastes, `Edge.Cuts`,
 and two drill files (both empty — there is nothing to drill). Plotted from
 KiCad 9.0.2; the job file reports `90.03 × 55.02 mm`.
+
+**These have been byte-compared against the files JLCPCB actually received** and are
+identical, so reordering from this folder reproduces the 2025 cards exactly.
+
+One aesthetic note: the order specified **Mark on PCB: Order Number**, and unlike the
+brother card this one has no edge rails for JLCPCB to hide that marking on. **There is
+probably a small JLCPCB order number printed somewhere on a face of the delivered cards.**
+If that matters, pick "Remove order number" or specify a location next time.
 
 The silkscreen gerbers are large (1.1 MB front, 658 KB back) because all that text
 and artwork is flattened to polygons. That's normal, not corruption.

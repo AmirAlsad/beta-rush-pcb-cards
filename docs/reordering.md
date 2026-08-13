@@ -1,107 +1,136 @@
 # Getting more cards made
 
+The 2025 run is fully documented in [`order-history.md`](./order-history.md) — vendor,
+prices, quantities, dates, the real part numbers, and the gotchas. This page is the
+short operational version.
+
 ## The one rule
 
 **Order from the `fab/` folders, not from a fresh KiCad export.**
 
-Every card directory contains the exact gerber package that was sent to the fab:
-
-| Card | Order this |
+| Card | Upload this |
 |---|---|
 | Brother card | [`../brother-card/fab/2025-07-30_release/`](../brother-card/fab/2025-07-30_release/) |
 | PNM card | [`../pnm-card/fab/2025-07-30_release/`](../pnm-card/fab/2025-07-30_release/) |
 
-Zip the folder's contents, upload, done. These files produced physical cards that
-worked, which is a stronger guarantee than any DRC pass.
+Those folders were **byte-compared against the files JLCPCB actually received** in 2025
+and are identical. Uploading them reproduces the 2025 cards exactly.
 
-### Why not just re-export?
+Re-exporting from source is not equivalent: replotting the unmodified brother card in
+KiCad 10.0.5 produces different zone-fill and teardrop geometry than the KiCad 9.0.2
+release set. The fill algorithm changed between versions, and this artwork *is* copper
+zones. Re-export only when you've genuinely changed the design — then write it to a new
+dated folder and treat it as a new revision.
 
-Because it was checked, and it isn't identical. Replotting the brother card from
-unmodified source in KiCad 10.0.5 produced **different zone fill and teardrop
-geometry** than the KiCad 9.0.2 release set. Neither output is wrong — the fill
-algorithm changed between versions. But this artwork *is* copper zones (that's the
-two-tone effect), so a re-plot is a new design that happens to look similar, not the
-same design. Reordering from `fab/` removes that whole class of surprise.
+## What the 2025 run cost
 
-Re-export only when you've actually changed the design — and then treat the result
-as a new revision with a new dated folder.
-
-## Ordering specification
-
-Upstream's original card was ordered from **PCBWay** with the spec below. It's a
-sensible default and any vendor (PCBWay, JLCPCB, OSH Park) can quote from it:
-
-| Option | Value |
-|---|---|
-| Layers | 2 |
-| Material | FR-4, TG130–140 |
-| Thickness | **1.6 mm** |
-| Min track / spacing | 5/5 mil |
-| Solder mask | **Green** |
-| Silkscreen | **White** |
-| Surface finish | HASL with lead |
-| Via process | Tenting vias |
-| Finished copper | 1 oz |
-| Remove product number | No |
-
-> **TODO — the actual 2025 order details aren't recorded.** Vendor, quantity, unit
-> cost, turnaround, and whether assembly was ordered or done by hand are not
-> recoverable from any file in this archive. See
-> [`OPEN-QUESTIONS.md`](./OPEN-QUESTIONS.md). Filling this in is the single most
-> useful thing a future year could add — "what did 200 of these cost and how long
-> did they take" is exactly what the next person needs.
-
-### Card-specific notes that affect your quote
-
-**Brother card** — 88.9 × 50.8 mm, rectangular with rounded corners. Straightforward.
-Order **green mask, white silkscreen, and one mask colour only**: the olive/green
-two-tone is bare copper zones under a single mask, not a second mask colour. Asking
-for two-colour mask would cost real money and change nothing.
-
-**PNM card** — 89.98 × 54.97 mm with an **octagonal outline** (chamfered corners).
-This is the one thing likely to go wrong. A rectangle can be sheared or V-scored;
-this profile must be **routed**. Confirm explicitly that the vendor is routing the
-outline from `Edge.Cuts` and hasn't substituted a rectangle. Some cheap-tier services
-restrict non-rectangular outlines or surcharge them.
-
-**Both cards** carry heavy silkscreen with thin strokes. KiCad flags this
-(`text_thickness`: 5 findings on the brother card, 21 on the PNM card) because strokes
-fall below the 0.15 mm design rule. The 2025 boards printed legibly anyway, but if you
-switch vendors, ask their **minimum silkscreen line width** and compare before
-committing to a large run.
-
-## Assembly
-
-Only the brother card has parts — five of them:
-
-| Ref | Part | Notes |
+| Product | Qty | PCB cost |
 |---|---|---|
-| `U2` | NXP `NT3H2111W0FHKH` | XQFN8, 1.6 × 1.6 mm, 0.5 mm pitch. **The hard part.** |
-| `C1` | 220 nF, 0603 | |
-| `C2` | Tuning cap, 0603 | **Value is a bring-up decision — see below** |
-| `R1` | 65 Ω, 0603 | 64.9 Ω 1% is the standard value |
-| `D1` | Red LED, 0603 | |
+| Brother card (blue, assembled) | 50 | $23.70 |
+| PNM card (green, bare) | 350 | $86.10 |
 
-Upstream's exact part numbers are listed at the end of
-[`nfc-theory.md`](./nfc-theory.md), though upstream used a green LED and the
-TSSOP-8 version of the IC.
+**$109.80 in PCB cost for 400 cards.** The **assembly charge and component cost for the
+50 brother cards were not captured** in the salvaged records — budget for those
+separately. Four of the five parts are JLCPCB "Extended" parts, which carry a per-part
+feeder setup fee; that's a fixed cost, so it stings much less at higher quantities.
 
-**About `C2`.** The schematic says `2p`, upstream's bring-up settled on `3.9 pF`, and
-upstream's BOM lists `1.5 pF`. Buy a small assortment (1.5, 2, 3.3, 3.9, 5.6 pF) and
-tune on a real board — sweep the antenna and pick the value whose dip sits closest to
-13.56 MHz. If you have no test gear, `3.9 pF` is the value that was *measured* to give
-13.555 MHz on this antenna geometry, so it's the best blind guess. A wrong value
-shortens read range rather than breaking the card.
+Fabrication took **3 days** (brother, including assembly) and **5 days** (PNM). Order to
+rush was 24 days. Three weeks is comfortable; two is tight but doable.
 
-**Hand vs. machine.** The XQFN8 is small for hand assembly — hot air with generous
-flux, or paste plus a hotplate. For a large batch, either pay for assembly, or look at
-[`../brother-card-v1/`](../brother-card-v1/), which used a pin-compatible **TSSOP-8**
-version of the same NTAG family that is far friendlier to an iron. Reverting the
-package is a legitimate design choice for a hand-assembled run.
+## Settings to select — including three that are easy to get wrong
+
+Vendor: **JLCPCB**, order `10486412A` in 2025.
+
+| Setting | Brother card | PNM card |
+|---|---|---|
+| Layers | 2 | 2 |
+| Material | FR-4 | FR-4 TG135 |
+| **Thickness** | **1 mm** ⚠️ | **1 mm** ⚠️ |
+| **Solder mask** | **Blue** ⚠️ | **Green** ⚠️ |
+| Silkscreen | White, ink-jet | White, ink-jet |
+| Outer copper | 1 oz | 1 oz |
+| Surface finish | HASL (lead-free when assembled) | HASL with lead |
+| Via covering | Tented | Tented |
+| Electrical test | Flying probe, random | Flying probe, random |
+
+### ⚠️ 1. Thickness: set 1 mm, don't accept the default
+
+**Every KiCad file in this repo says 1.6 mm. Both cards were ordered at 1 mm.** Thickness
+is an order-page dropdown that isn't carried in the gerbers, so nothing will warn you.
+1 mm is the right choice for a card people put in a wallet — 1.6 mm feels like a circuit
+board. Accept the default and you'll get visibly chunkier cards than the 2025 run.
+
+### ⚠️ 2. Colours: the cards are not both green
+
+**Brother card = blue mask. PNM card = green mask.** Both white silkscreen. One mask
+colour each — the two-tone effect on each card is **bare copper under a single mask**, so
+never order "two-colour mask". On the blue card, the copper half reads blue-violet.
+
+### ⚠️ 3. PNM card: confirm the outline is routed
+
+The PNM card's outline is an **octagon** (chamfered corners), which must be **routed**, not
+sheared or V-scored. JLCPCB handled it correctly in 2025 — its production set for that
+card has no V-cut layer at all. Some cheap tiers restrict or surcharge non-rectangular
+outlines, so confirm it's priced as a routed profile rather than silently squared off.
+
+## Ordering assembly for the brother card
+
+The 2025 brother cards were **machine-assembled by JLCPCB**, top side only, 50 units.
+Upload with the gerbers:
+
+- [`../brother-card/fab/jlcpcb-assembly/jlcpcb-bom.csv`](../brother-card/fab/jlcpcb-assembly/jlcpcb-bom.csv)
+- [`../brother-card/fab/jlcpcb-assembly/jlcpcb-cpl.csv`](../brother-card/fab/jlcpcb-assembly/jlcpcb-cpl.csv)
+
+Both are already in JLCPCB's column format. See that folder's
+[README](../brother-card/fab/jlcpcb-assembly/) for the catalogue codes worth pasting in.
+
+### The bill of materials, as actually ordered
+
+| Ref | Part | JLCPCB code |
+|---|---|---|
+| `U2` | NT3H2111W0FHKH — NTAG I²C plus, XQFN8 | `C710403` |
+| `C1` | CL10B224KA8NNNC — 220 nF 0603 X7R | `C21120` (Basic) |
+| `C2` | 0603CG2R0C500NT — **2.0 pF** 0603 C0G 50 V | `C1650` |
+| `R1` | 0603WAF649JT5E — **64.9 Ω** 1% 0603 | `C23224` |
+| `D1` | LTST-C190KRKT — red 0603 | `C94869` |
+
+**`C2` is settled: 2.0 pF.** Earlier docs in this repo flagged it as uncertain because
+upstream used 3.9 pF and listed 1.5 pF. Those were upstream's board. The Beta cards
+shipped with 2.0 pF and worked — reorder with it.
+
+### Pay for depaneling
+
+JLCPCB adds **two 10 mm edge rails** to the brother card for assembly (which is why the
+order dimension reads 88.9 × 70.8 mm instead of 88.9 × 50.8 mm), carrying the fiducials
+and SMT tracking QR code. In 2025, **"Depanel boards & edge rail before delivery" was set
+to No**, so 50 cards arrived with rails attached and someone snapped each one off along a
+V-score, with "Deburring/Edge rounding" also off.
+
+**Tick depaneling next time.** It's cheap, and it's the difference between a clean card
+and two rough edges on something you hand to strangers. The QR/tracking marks live on the
+rails, so they disappear with them — a good property to keep if you change the panel.
+
+### Consider removing the order number
+
+Both products were ordered with **Mark on PCB: Order Number**. On the brother card that
+folded into the marks on the rails, so the card faces stayed clean. **The PNM card has no
+rails, so it likely carries a small JLCPCB order number on a face.** If that bothers you,
+choose "Remove order number" (small surcharge) or specify a location.
+
+### Hand assembly, if you ever need it
+
+Not necessary — JLCPCB assembles these fine — but if you ever do it yourself, the XQFN8
+is 1.6 × 1.6 mm at 0.5 mm pitch with no exposed pad: hot air and generous flux, or paste
+and a hotplate. [`../brother-card-v1/`](../brother-card-v1/) used a pin-compatible
+**TSSOP-8** version of the same NTAG family that is far friendlier to an iron.
 
 ## After assembly
 
-Every card needs its NFC tag written before it's handed out —
-[`programming-the-tag.md`](./programming-the-tag.md). Budget time for this: it's about
-15 seconds per card with an Android phone, but it's per-card, and it's the step
-that's easy to forget until the night before.
+Every brother card needs its NFC tag written before it goes out —
+[`programming-the-tag.md`](./programming-the-tag.md). ~15 seconds per card with an Android
+phone, but it's per card, and it's the step people forget until the night before.
+
+The 2025 tags were **not** locked read-only, so existing cards can be rewritten rather
+than reordered. Consider pointing the tags at a **redirect you control** so future years
+need no reprogramming at all — see
+[`next-year-checklist.md`](./next-year-checklist.md).

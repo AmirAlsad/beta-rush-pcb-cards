@@ -30,13 +30,18 @@ the MIT dome, two figures. It's still in the vendored library as `btp:doodles`
 
 ## Two reasons to look here before starting a v3
 
-1. **TSSOP-8 is far easier to hand-assemble.** v2's XQFN8 is a 1.6 mm square with
-   0.5 mm pitch and no exposed pad — genuinely hard to place by hand. v1's TSSOP-8
-   has 0.65 mm pitch and gull-wing leads you can touch with an iron. Both parts are
-   the same NTAG I²C family and pin-compatible for this circuit's purposes
-   (`LA`/`LB` to the coil, `VCC` to the LED, I²C unused). **If a future year plans
-   to hand-solder a large batch, start from this package choice.**
-2. **The doodle art.** Reusing it is a copy-paste of `btp:doodles`, not a redraw.
+1. **The doodle art.** Reusing it is a copy-paste of `btp:doodles`, not a redraw. This is
+   the main reason to keep this folder.
+2. **TSSOP-8, but only if you're hand-assembling.** v2's XQFN8 is a 1.6 mm square with
+   0.5 mm pitch and no exposed pad — genuinely hard to place by hand. v1's TSSOP-8 has
+   0.65 mm pitch and gull-wing leads you can touch with an iron. Both are the same NTAG
+   I²C family and pin-compatible for this circuit's purposes (`LA`/`LB` to the coil,
+   `VCC` to the LED, I²C unused).
+
+   **This mattered less than it looks.** The 2025 cards were **machine-assembled by
+   JLCPCB** ([`../docs/order-history.md`](../docs/order-history.md)), so the fine pitch
+   was never a problem in practice — a pick-and-place doesn't care. Revisit the package
+   only if a future year genuinely intends to hand-solder a batch.
 
 ## Caveats
 
