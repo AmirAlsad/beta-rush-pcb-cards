@@ -152,8 +152,11 @@ as permission. This repo is public.
 **Suggested fix:** open an issue or email Rahim Aziz asking him to add a license (MIT
 or CC-BY would both suit), or asking for explicit permission to redistribute. It costs
 one message and removes the ambiguity. If he'd rather not, the fallback is to strip
-`nfc-theory.md` and the inherited `images/` + `antenna-simulations/` + `reference/`
-assets down to links.
+`nfc-theory.md` and the inherited `images/` + `antenna-simulations/` assets down to
+links.
 
-**Also unresolved:** this repo has no license of its own yet. Worth deciding what Beta
-wants for the original work — the artwork, the `btp` library, and the PNM card.
+**Partially resolved:** Beta's original work — the artwork, the `btp` library, the
+board layouts, the PNM card, and this documentation — is now **MIT licensed**, and
+[`../LICENSE`](../LICENSE) states explicitly which files that does *not* cover
+(upstream's material, the vendor application notes, and the fraternity's insignia).
+**Still open:** getting an actual grant from Rahim for the upstream material.

@@ -113,8 +113,17 @@ What Beta added: all of the artwork, the Beta symbol/footprint library, a swap t
 a smaller NFC IC package with a hand-drawn footprint, and the PNM card (which is
 entirely original — it shares nothing with upstream but the toolchain).
 
-Upstream carries **no license file**, which is a loose end — see
-[`docs/OPEN-QUESTIONS.md`](./docs/OPEN-QUESTIONS.md).
+## License
+
+Beta's original work here — the artwork, the `btp` library, the board layouts, the
+PNM card, and this documentation — is **MIT licensed**. See [`LICENSE`](./LICENSE).
+
+Upstream's inherited material (`docs/nfc-theory.md`, `docs/images/`,
+`docs/antenna-simulations/`) is **not** covered: upstream carries no license file, so
+it's included with attribution while an explicit grant is sought. The Beta Theta Pi
+crest and wordmark are the fraternity's marks and aren't licensed by this repo either.
+`LICENSE` spells out each boundary; [`docs/OPEN-QUESTIONS.md`](./docs/OPEN-QUESTIONS.md)
+§9 tracks the loose end.
 
 ## Reusing these next year
 
