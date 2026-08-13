@@ -7,10 +7,28 @@ two products:
 |---|---|---|---|---|
 | **P3** | `Success_P3` | Brother card, **blue**, **assembled by JLCPCB** | **50** | **$23.70** |
 | **P4** | `Output Files_P4` | PNM card, **green**, bare board | **350** | **$86.10** |
+| | | | | **≈ $400 paid in total** — see below |
 
-> **$109.80 for 400 cards** in PCB cost. The **PCBA (assembly) charge and the
-> component cost for the 50 brother cards are not in the salvaged records** — the
-> screenshots capture the PCB line items only. Budget for assembly separately.
+> ### 💸 The real number is **≈ $400 all-in**, not $109.80
+>
+> The $109.80 above is **only the two PCB line items**. The actual amount paid for the
+> whole order was **about $400**, and **delivery and import tariffs took a significant
+> chunk of it.**
+>
+> | | |
+> |---|---|
+> | PCB line items (documented) | **$109.80** |
+> | Assembly + components + shipping + tariffs | **≈ $290** |
+> | **Total paid** | **≈ $400** |
+>
+> The split within that $290 is not recorded — only that shipping and tariffs were a
+> large share of it. **Plan against $400, not $110.** The price JLCPCB quotes you on the
+> order page is roughly a quarter of what leaves your account, because assembly, parts,
+> freight, and US import duty on Chinese-manufactured goods all land afterward.
+>
+> Blended, that's **~$1 per card across 400 cards** — still cheap for what these are. But
+> the 50 brother cards carry essentially all of the assembly and component cost, so their
+> true unit cost is many times the PNM cards'.
 
 Reconstructed from `docs/order-history/`: four screenshots of JLCPCB's order pages,
 and JLCPCB's own internal CAM job records (`4te.json`) recovered from the production

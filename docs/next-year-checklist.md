@@ -103,9 +103,31 @@ The steps that will actually bite you:
 | Step | Notes |
 |---|---|
 | Finalise the schedule | The real blocker. You can't print a card before events are locked. |
-| Fab + assembly | 3–5 days at JLCPCB in 2025. Cheap shipping tiers add much more than fab does. |
+| Fab + assembly | 3–5 days at JLCPCB in 2025. Cheap shipping tiers add far more delay than fab does. |
+| **Shipping + customs** | The leg that varies most, and the one that cost the most — see the budget note below. |
 | **Depaneling** | If you skip paying for it, someone snaps 50 edge rails off by hand. Budget the hour, or tick the box. |
 | Tag programming | ~15 s per card, but **per card**. Easy to forget until the night before — and unnecessary entirely if you set up the redirect above. |
+
+### Budget ≈ $400, not $110
+
+The 2025 order's PCB line items came to $109.80, but **about $400 was actually paid** once
+assembly, components, shipping, and US import tariffs were counted — with freight and
+tariffs taking a significant share. **Apply a 3–4× multiplier to whatever JLCPCB's order
+page quotes you**, and keep both cards on a single shipment, since duty and freight are
+largely per-shipment rather than per-board. Details in
+[`order-history.md`](./order-history.md).
+
+### Take photos this time
+
+**No photographs of the 2025 cards were ever taken.** The only visual record of either
+card is the set of CLI renders in [`renders/`](./renders/) — accurate about geometry and
+colour, but they can't show solder quality, real silkscreen legibility, the snapped rail
+edge, or the LED lit during a tap.
+
+When the next batch arrives: shoot front and back of both cards, one mid-tap with `D1`
+lit, and a few from rush week of cards actually being handed out. Put them in
+`docs/photos/` and link them from the card READMEs. It costs five minutes and it's the
+one thing this archive can't reconstruct after the fact.
 
 ## Ideas worth considering
 

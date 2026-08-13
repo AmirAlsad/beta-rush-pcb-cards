@@ -130,18 +130,26 @@ settled, so don't reintroduce the doubt.
 ## Facts that are still not in this repo
 
 `docs/OPEN-QUESTIONS.md` tracks what remains unrecoverable, and keeps resolved entries at
-the bottom so nobody re-investigates them. Still open: **photographs of the real cards**,
-the **assembly/component cost**, the exact programming app, and an upstream license grant.
+the bottom so nobody re-investigates them. Only two are still open: the exact tag-writing
+app, and an upstream license grant. Neither blocks a reorder.
 
 Where that file gives a best inference rather than a fact, it labels it as such — **don't
 promote those to established fact**. If you learn a real answer, write it into the relevant
 doc and move the entry to Resolved.
 
-There are **no photographs of either finished Beta card** anywhere in this repo. Every
-photo under `docs/images/` is upstream's card. Images under `docs/renders/` are CLI
-renders, not photos — describe them as such. Renders show geometry and colour faithfully;
-they cannot show solder quality, real silkscreen legibility, the snapped rail edge, or the
-LED lit.
+**No photographs of either finished Beta card exist** — confirmed, they were never taken,
+so don't go looking. Every photo under `docs/images/` is *upstream's* card, not Beta's.
+
+That makes the CLI renders in `docs/renders/` the **only** visual record of these cards.
+Describe them as renders, never as photos. They're faithful about geometry and (now) mask
+colour, but they cannot show solder quality, real silkscreen legibility at 1 mm, the
+snapped edge where the assembly rails came off, or `D1` lit mid-tap. If a future batch gets
+photographed, `docs/photos/` is the intended home and
+`docs/next-year-checklist.md` asks for it.
+
+**Cost:** the order totalled **≈$400**, not the $109.80 of PCB line items — assembly,
+parts, freight, and US import tariffs made up the rest. When discussing cost, lead with
+$400; quoting the PCB subtotal alone understates it by ~4×.
 
 ## Attribution
 

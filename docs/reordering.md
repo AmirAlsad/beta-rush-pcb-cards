@@ -22,20 +22,38 @@ release set. The fill algorithm changed between versions, and this artwork *is* 
 zones. Re-export only when you've genuinely changed the design — then write it to a new
 dated folder and treat it as a new revision.
 
-## What the 2025 run cost
+## What the 2025 run cost — budget $400, not $110
 
-| Product | Qty | PCB cost |
-|---|---|---|
-| Brother card (blue, assembled) | 50 | $23.70 |
-| PNM card (green, bare) | 350 | $86.10 |
+| Line | Amount |
+|---|---|
+| Brother card PCBs (50, blue, assembled) | $23.70 |
+| PNM card PCBs (350, green, bare) | $86.10 |
+| **PCB subtotal** | **$109.80** |
+| Assembly + components + shipping + **tariffs** | **≈ $290** |
+| **Total actually paid** | **≈ $400** |
 
-**$109.80 in PCB cost for 400 cards.** The **assembly charge and component cost for the
-50 brother cards were not captured** in the salvaged records — budget for those
-separately. Four of the five parts are JLCPCB "Extended" parts, which carry a per-part
-feeder setup fee; that's a fixed cost, so it stings much less at higher quantities.
+**The order-page price was roughly a quarter of the final cost.** Delivery and US import
+tariffs on Chinese-manufactured goods took a significant share of that $290, alongside
+assembly labour and the parts themselves. The exact split isn't recorded.
+
+Two things follow for planning:
+
+- **Quote with a 3–4× multiplier on whatever JLCPCB's PCB page shows you**, or you will
+  badly under-budget. This is the single most useful number on this page.
+- **Order in fewer, larger shipments.** Freight and duty are largely per-shipment rather
+  than per-board, so splitting a run across two orders roughly doubles the part of the
+  bill that hurt most. Both cards went out on one order in 2025 — keep doing that.
+
+Blended, ≈$400 for 400 cards is **~$1 per card**, which is still cheap for a PCB you hand
+to someone. But the 50 brother cards absorb essentially all the assembly and component
+cost, so their real unit cost is many times the PNM cards'. Four of the five parts are
+JLCPCB **"Extended"** parts carrying a per-part feeder setup fee — a *fixed* cost, so the
+per-card penalty shrinks fast with quantity. If you're near the decision, ordering 200
+brother cards instead of 50 costs far less than 4×.
 
 Fabrication took **3 days** (brother, including assembly) and **5 days** (PNM). Order to
-rush was 24 days. Three weeks is comfortable; two is tight but doable.
+rush was 24 days — but note shipping is the leg that varies most, and the cheap freight
+tiers that keep cost down are the slow ones. Three weeks is comfortable; two is tight.
 
 ## Settings to select — including three that are easy to get wrong
 

@@ -9,9 +9,14 @@ Two PCB cards designed for **Beta Theta Pi, Beta Eta chapter (MIT)** rush week,
 whole point was that handing someone a PCB is memorable in a way a paper flyer
 never is.
 
-**400 cards were made** by JLCPCB for **$109.80** in board cost: 50 assembled NFC
-cards and 350 schedule cards. Everything needed to order more is in this repo,
-including the exact files JLCPCB received.
+**400 cards were made** by JLCPCB — 50 assembled NFC cards and 350 schedule cards — for
+**about $400 all-in**. Everything needed to order more is in this repo, including the
+exact files JLCPCB received.
+
+> Budget note: the PCB line items were only **$109.80** of that $400. Assembly,
+> components, shipping, and import tariffs made up the rest, with freight and tariffs
+> taking a large share. **The order-page price is roughly a quarter of what you actually
+> pay.** See [`docs/order-history.md`](./docs/order-history.md).
 
 | | |
 |---|---|
